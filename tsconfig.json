@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    // Target modern ECMAScript standard supported by Node 20+
+    "target": "ES2022",
+    // Use NodeNext module system matching our package.json "type": "module"
+    "module": "NodeNext",
+    // Match Node.js native ECMAScript module resolution algorithm
+    "moduleResolution": "NodeNext",
+    // Include standard JS libraries and DOM definitions for browser/speech API typing
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    // Output compiled JavaScript files into a dedicated dist/ directory
+    "outDir": "./dist",
+    // Root directory containing our source files
+    "rootDir": "./",
+    // Enable all strict type-checking options to prevent runtime null/undefined bugs
+    "strict": true,
+    // Ensure interoperability between CommonJS and ES Modules
+    "esModuleInterop": true,
+    // Allow importing .json files directly as typed objects (used for schemas and configs)
+    "resolveJsonModule": true,
+    // Skip type checking of external declaration files in node_modules to speed up builds
+    "skipLibCheck": true,
+    // Disallow inconsistently-cased references to the same file across Windows/Linux
+    "forceConsistentCasingInFileNames": true
+  },
+  // Files and folders included in type checking and compilation
+  "include": [
+    "server/**/*"
+  ],
+  // Folders excluded from compilation
+  "exclude": [
+    "node_modules",
+    "dist",
+    "public"
+  ]
+}

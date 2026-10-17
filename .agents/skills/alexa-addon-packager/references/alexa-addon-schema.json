@@ -1,0 +1,181 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Alexa+ MCP Add-on Package Manifest Schema",
+  "description": "Validation schema for offline packaging of Alexa+ Streamable HTTP MCP Add-on manifests (addon.json) per the Alexa+ QuickStart specification.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "addonId",
+    "name",
+    "version",
+    "description",
+    "mcpServer",
+    "capabilities",
+    "displayMetadata",
+    "examplePhrases"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "description": "Schema version of the Alexa+ Add-on packaging standard",
+      "enum": ["1.0.0", "2025-11-25", "2026-07-28"]
+    },
+    "addonId": {
+      "type": "string",
+      "description": "Unique slug identifier for the Alexa+ add-on",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "name": {
+      "type": "string",
+      "description": "User-facing title of the smart kitchen concierge add-on",
+      "minLength": 3,
+      "maxLength": 60
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version of the package (e.g., 1.0.0)",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "description": {
+      "type": "string",
+      "description": "Plain-English description explaining what the add-on does for households",
+      "minLength": 10,
+      "maxLength": 300
+    },
+    "mcpServer": {
+      "type": "object",
+      "description": "Connection details for the self-hosted Streamable HTTP MCP server",
+      "required": ["transport", "url", "protocolVersion"],
+      "properties": {
+        "transport": {
+          "type": "string",
+          "enum": ["streamable-http", "http-sse"]
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Public HTTPS or local HTTP /mcp endpoint URL"
+        },
+        "protocolVersion": {
+          "type": "string",
+          "enum": ["2025-11-25", "2026-07-28"]
+        },
+        "authentication": {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["none", "oauth2.1-pkce", "bearer"]
+            },
+            "prmEndpoint": {
+              "type": "string",
+              "format": "uri",
+              "description": "RFC 9728 Protected Resource Metadata discovery URL"
+            },
+            "authorizationEndpoint": {
+              "type": "string",
+              "format": "uri"
+            },
+            "tokenEndpoint": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "description": "Registered tools, resources, and embedded MCP Apps",
+      "required": ["tools", "resources"],
+      "properties": {
+        "tools": {
+          "type": "array",
+          "description": "Callable MCP tools discovered from tools/list",
+          "items": {
+            "type": "object",
+            "required": ["name", "description", "inputSchema"],
+            "properties": {
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "inputSchema": { "type": "object" }
+            }
+          }
+        },
+        "resources": {
+          "type": "array",
+          "description": "Stateful resources discovered from resources/list",
+          "items": {
+            "type": "object",
+            "required": ["uri", "name", "mimeType"],
+            "properties": {
+              "uri": { "type": "string" },
+              "name": { "type": "string" },
+              "mimeType": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "mcpApps": {
+          "type": "array",
+          "description": "Interactive HTML UI micro-apps rendered on the Echo Show screen",
+          "items": {
+            "type": "object",
+            "required": ["uri", "targetSurface"],
+            "properties": {
+              "uri": { "type": "string" },
+              "targetSurface": {
+                "type": "string",
+                "enum": ["echo-show-conversation", "echo-show-ambient-bar", "modal-drawer"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "displayMetadata": {
+      "type": "object",
+      "description": "Ergonomic configuration for smart display devices like Echo Show 21",
+      "required": ["category", "supportedDevices", "multimodalFeatures"],
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": ["smart-kitchen", "food-and-drink", "shopping", "home-automation"]
+        },
+        "icon": {
+          "type": "string",
+          "description": "Path or URL to the 512x512 app icon"
+        },
+        "supportedDevices": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["echo-show-21", "echo-show-15", "echo-show-10", "echo-show-8", "alexa-app"]
+          }
+        },
+        "multimodalFeatures": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "interactive-touch-cards",
+              "mcp-apps-carousel",
+              "ambient-voice-tts",
+              "multi-burner-timers",
+              "wire-protocol-telemetry"
+            ]
+          }
+        }
+      }
+    },
+    "examplePhrases": {
+      "type": "array",
+      "description": "Sample voice utterances that invoke this add-on",
+      "minItems": 3,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

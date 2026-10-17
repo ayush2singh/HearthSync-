@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HearthSync+ | Alexa+ Echo Show 21 Simulator & MCP Inspector</title>
+  <!-- Modern Google Font: Outfit for smart ambient display ergonomics -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-mode">
+
+  <!-- Root application container: Split View between Echo Show 21 Display and Wire Inspector -->
+  <div class="app-viewport">
+
+    <!-- ====================================================================== -->
+    <!-- LEFT SURFACE: Echo Show 21 Ambient Smart Display (70% Viewport)        -->
+    <!-- ====================================================================== -->
+    <main class="echo-display" id="echo-display">
+      
+      <!-- Top Ambient Status Bar -->
+      <header class="ambient-header">
+        <div class="header-brand">
+          <div class="echo-badge">ECHO SHOW 21</div>
+          <h1 class="brand-title">HearthSync<span>+</span></h1>
+        </div>
+
+        <!-- Household Memory & Dietary Chips (from hearth://household/memory) -->
+        <div class="household-chips" id="household-chips">
+          <span class="chip chip-dietary">🌱 Vegetarian</span>
+          <span class="chip chip-allergy">🚫 Nut-Free</span>
+          <span class="chip chip-budget" id="chip-budget">💰 $48.50 Budget Left</span>
+          <span class="chip chip-urgent" id="chip-urgent">⚠️ 3 Expiring Items</span>
+        </div>
+
+        <div class="header-clock" id="clock-display">10:42 AM</div>
+      </header>
+
+      <!-- Center Interaction Stage -->
+      <section class="display-stage">
+        
+        <!-- Animated Alexa Cyan-Blue Voice Listening Orb -->
+        <div class="voice-orb-wrapper">
+          <div class="orb-aura" id="orb-aura"></div>
+          <button class="voice-orb" id="voice-orb" title="Click to Speak or Toggle Voice Input" aria-label="Alexa Voice Button">
+            <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="23"/>
+              <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+          </button>
+          <div class="orb-state-label" id="orb-state-label">Ready • "Alexa, plan dinner using our expiring groceries"</div>
+        </div>
+
+        <!-- Alexa Voice Synthesis Caption Bar (≤2 Warm Sentences) -->
+        <div class="voice-caption-box" id="voice-caption-box">
+          <p class="caption-text" id="caption-text">
+            "Welcome to HearthSync+. I've audited your pantry and found 3 items expiring within 48 hours: baby spinach, paneer, and Greek yogurt. Would you like me to plan dinner or stage a smart grocery cart?"
+          </p>
+        </div>
+
+        <!-- Interactive Multimodal Cards & MCP App Container -->
+        <div class="content-carousel-stage" id="content-carousel-stage">
+          
+          <!-- Recipe Meal Cards (plan_expiry_meals tool output) -->
+          <div class="recipe-cards-container" id="recipe-cards-container">
+            <!-- Dynamically populated by app.js -->
+          </div>
+
+          <!-- Embedded MCP App Widget (ui://hearth/cart-carousel) -->
+          <div class="mcp-app-container hidden" id="mcp-app-container">
+            <div class="mcp-app-header">
+              <div class="app-tag">MCP APP • @modelcontextprotocol/ext-apps</div>
+              <div class="app-uri">ui://hearth/cart-carousel</div>
+            </div>
+            <div class="mcp-app-frame" id="mcp-app-frame">
+              <!-- Dynamically populated with interactive HTML bundle -->
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Bottom Ambient Bar: Active Multi-Burner Cooking Timers -->
+      <footer class="ambient-footer">
+        <div class="timer-bar-title">Active Kitchen Timers</div>
+        <div class="timers-tray" id="timers-tray">
+          <div class="timer-chip empty">No active cooking timers. Say "Start prep timers" to begin.</div>
+        </div>
+      </footer>
+
+      <!-- Quick Action Utterance Bar -->
+      <div class="quick-utterances-bar">
+        <button class="utterance-btn" data-utterance="Alexa, plan two dinners using our expiring spinach and paneer under $25">
+          💬 "Plan dinners with expiring items"
+        </button>
+        <button class="utterance-btn" data-utterance="Stage smart cart with nut-free unit price substitutions">
+          🛒 "Stage Smart Cart"
+        </button>
+        <button class="utterance-btn" data-utterance="Confirm checkout and start prep timers">
+          ✅ "Confirm Checkout"
+        </button>
+      </div>
+
+    </main>
+
+    <!-- ====================================================================== -->
+    <!-- RIGHT DRAWER: Judge & Developer Wire Protocol Inspector (30% Viewport) -->
+    <!-- ====================================================================== -->
+    <aside class="wire-inspector" id="wire-inspector">
+      
+      <div class="inspector-header">
+        <div class="inspector-title">
+          <span class="live-dot"></span>
+          <h2>Protocol Inspector</h2>
+        </div>
+        <div class="protocol-badges">
+          <span class="proto-tag">Streamable HTTP</span>
+          <span class="proto-tag">JSON-RPC 2.0</span>
+        </div>
+      </div>
+
+      <!-- Live Protocol Metric Badges -->
+      <div class="telemetry-bar">
+        <div class="metric-card">
+          <span class="metric-label">Latency SLA</span>
+          <span class="metric-val text-success" id="metric-latency">~82ms</span>
+          <span class="metric-sub">&lt;500ms mandated</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Active Session</span>
+          <span class="metric-val text-accent" id="metric-session">Active</span>
+          <span class="metric-sub" id="metric-session-id">mcp-sess-init</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Skill Stage</span>
+          <span class="metric-val text-warning" id="metric-skill-stage">Stage 2</span>
+          <span class="metric-sub">Activation</span>
+        </div>
+      </div>
+
+      <!-- Quick Action: Export Add-on Package -->
+      <div class="inspector-action-box">
+        <button class="export-btn" id="btn-export-addon">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Export Alexa+ Add-on Package
+        </button>
+        <div class="export-status" id="export-status">Generates schema-valid addon.json offline</div>
+      </div>
+
+      <!-- Live Streamable HTTP Frame Log Feed -->
+      <div class="frames-feed-container">
+        <div class="feed-header">
+          <span>Live /mcp Wire Stream</span>
+          <button class="clear-btn" id="btn-clear-logs">Clear</button>
+        </div>
+        <div class="frames-list" id="frames-list">
+          <!-- Populated in real-time by app.js -->
+          <div class="frame-item init">
+            <div class="frame-meta">
+              <span class="method-tag">POST /mcp</span>
+              <span class="time-tag">Ready</span>
+            </div>
+            <div class="frame-code">Listening for Streamable HTTP frames...</div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- Client Application Logic -->
+  <script src="app.js" type="module"></script>
+</body>
+</html>

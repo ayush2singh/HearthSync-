@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Production output
+dist/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Logs & Environment
+*.log
+.env
+.env.local
+
+# OS Metadata
+.DS_Store
+Thumbs.db

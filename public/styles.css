@@ -1,0 +1,623 @@
+/**
+ * HearthSync+ Echo Show 21 Ambient Display & Protocol Inspector Styles
+ * 
+ * Implements a high-fidelity Echo Show 21 smart display aesthetic on the left
+ * paired with a dark-mode, low-latency JSON-RPC/SSE wire inspector on the right.
+ */
+
+:root {
+  /* Color Palette */
+  --bg-dark: #090d16;
+  --surface-display: #0f172a;
+  --surface-card: rgba(30, 41, 59, 0.7);
+  --surface-card-hover: rgba(51, 65, 85, 0.85);
+  --surface-inspector: #080c14;
+  --border-subtle: rgba(148, 163, 184, 0.12);
+  --border-focus: rgba(56, 189, 248, 0.4);
+
+  /* Alexa Signature Accent Colors */
+  --alexa-cyan: #00d2ff;
+  --alexa-blue: #0284c7;
+  --alexa-glow: rgba(0, 210, 255, 0.35);
+  --accent-green: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+
+  /* Typography */
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --font-main: 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Master Split View Layout */
+.app-viewport {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background: radial-gradient(circle at 20% 30%, rgba(2, 132, 199, 0.08) 0%, transparent 70%);
+}
+
+/* ==========================================================================
+   LEFT PANE: Echo Show 21 Smart Display Surface (70% Viewport)
+   ========================================================================== */
+.echo-display {
+  flex: 7;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 32px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(10, 15, 29, 0.98) 100%);
+  border-right: 1px solid var(--border-subtle);
+  position: relative;
+  overflow-y: auto;
+}
+
+/* Top Ambient Status Header */
+.ambient-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.echo-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  background: rgba(14, 165, 233, 0.15);
+  color: var(--alexa-cyan);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+.brand-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.brand-title span {
+  color: var(--alexa-cyan);
+}
+
+/* Dietary & Household Memory Chips */
+.household-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+.chip-dietary { color: #86efac; border-color: rgba(34, 197, 94, 0.3); }
+.chip-allergy { color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); }
+.chip-budget { color: #fde047; border-color: rgba(234, 179, 8, 0.3); }
+.chip-urgent { color: #fdba74; border-color: rgba(249, 115, 22, 0.4); animation: pulseUrgent 2s infinite; }
+
+@keyframes pulseUrgent {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(0.98); }
+}
+
+.header-clock {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* Center Interaction Stage */
+.display-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+  gap: 20px;
+}
+
+/* Alexa Cyan Listening Orb */
+.voice-orb-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.orb-aura {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--alexa-glow) 0%, transparent 70%);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.voice-orb {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border: 2px solid var(--alexa-cyan);
+  box-shadow: 0 0 24px var(--alexa-glow);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.voice-orb:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 32px var(--alexa-cyan);
+}
+
+.voice-orb.listening {
+  animation: orbPulse 1.4s infinite alternate;
+  background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
+  border-color: #a5f3fc;
+}
+
+@keyframes orbPulse {
+  0% { transform: scale(1); box-shadow: 0 0 20px var(--alexa-glow); }
+  100% { transform: scale(1.12); box-shadow: 0 0 45px var(--alexa-cyan); }
+}
+
+.mic-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.orb-state-label {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Voice Caption Bar */
+.voice-caption-box {
+  max-width: 680px;
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(8px);
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  text-align: center;
+}
+
+.caption-text {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #e2e8f0;
+}
+
+/* Multimodal Content Carousel (Recipes & MCP App) */
+.content-carousel-stage {
+  width: 100%;
+  max-width: 880px;
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+}
+
+.recipe-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.recipe-card {
+  background: var(--surface-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s ease;
+}
+
+.recipe-card:hover {
+  background: var(--surface-card-hover);
+  border-color: var(--border-focus);
+  transform: translateY(-2px);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.card-meta-row {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+
+.card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-expiring-tag {
+  font-size: 11px;
+  background: rgba(249, 115, 22, 0.15);
+  color: #fb923c;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-card {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-card-primary {
+  background: var(--alexa-blue);
+  color: #fff;
+}
+.btn-card-primary:hover { background: #0284c7; }
+
+.btn-card-secondary {
+  background: rgba(51, 65, 85, 0.8);
+  color: #cbd5e1;
+}
+.btn-card-secondary:hover { background: rgba(71, 85, 105, 1); }
+
+/* Embedded MCP App Widget */
+.mcp-app-container {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid var(--alexa-blue);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.2);
+}
+
+.mcp-app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  background: rgba(2, 132, 199, 0.15);
+  border-bottom: 1px solid rgba(2, 132, 199, 0.3);
+}
+
+.app-tag { font-size: 11px; font-weight: 700; color: var(--alexa-cyan); }
+.app-uri { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); }
+
+.mcp-app-frame {
+  padding: 12px;
+}
+
+.hidden { display: none !important; }
+
+/* Bottom Timers Footer */
+.ambient-footer {
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.timer-bar-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.timers-tray {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+}
+
+.timer-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(30, 41, 59, 0.7);
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  font-size: 13px;
+}
+
+.timer-chip.empty {
+  color: var(--text-dim);
+  font-style: italic;
+  font-size: 12px;
+}
+
+.timer-countdown {
+  font-family: var(--font-mono);
+  color: var(--alexa-cyan);
+  font-weight: 600;
+}
+
+/* Quick Action Utterance Bar */
+.quick-utterances-bar {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  overflow-x: auto;
+}
+
+.utterance-btn {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.utterance-btn:hover {
+  background: rgba(51, 65, 85, 0.8);
+  color: #fff;
+  border-color: var(--alexa-cyan);
+}
+
+/* ==========================================================================
+   RIGHT PANE: Judge & Developer Wire Protocol Inspector (30% Viewport)
+   ========================================================================== */
+.wire-inspector {
+  flex: 3;
+  background: var(--surface-inspector);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-left: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.inspector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.inspector-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #22c55e;
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.inspector-title h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.protocol-badges {
+  display: flex;
+  gap: 6px;
+}
+
+.proto-tag {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  background: rgba(30, 41, 59, 0.8);
+  color: var(--text-dim);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border-subtle);
+}
+
+/* Telemetry Metric Cards */
+.telemetry-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.metric-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-subtle);
+  padding: 8px 10px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 600; }
+.metric-val { font-size: 15px; font-weight: 700; margin: 2px 0; }
+.metric-sub { font-size: 10px; color: var(--text-dim); }
+
+.text-success { color: var(--accent-green); }
+.text-accent { color: var(--alexa-cyan); }
+.text-warning { color: var(--accent-amber); }
+
+/* Export Addon Action Box */
+.inspector-action-box {
+  margin-bottom: 14px;
+}
+
+.export-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.2) 0%, rgba(14, 165, 233, 0.2) 100%);
+  border: 1px solid var(--alexa-blue);
+  color: var(--alexa-cyan);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.export-btn:hover {
+  background: var(--alexa-blue);
+  color: #fff;
+}
+
+.export-status {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* Live Wire Stream Log Feed */
+.frames-feed-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: rgba(11, 17, 30, 0.8);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.feed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(15, 23, 42, 0.8);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.clear-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 10px;
+  cursor: pointer;
+}
+.clear-btn:hover { color: var(--text-main); }
+
+.frames-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.frame-item {
+  background: rgba(15, 23, 42, 0.9);
+  border-left: 3px solid var(--border-subtle);
+  padding: 6px 10px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.frame-item.inbound { border-left-color: var(--alexa-cyan); }
+.frame-item.outbound { border-left-color: var(--accent-green); }
+
+.frame-meta {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-dim);
+  font-size: 10px;
+}
+
+.method-tag { color: var(--alexa-cyan); font-weight: 600; }
+.frame-code {
+  color: #cbd5e1;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 120px;
+  overflow-y: auto;
+}

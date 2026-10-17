@@ -1,0 +1,199 @@
+{
+  "schemaVersion": "1.0.0",
+  "addonId": "hearthsync-plus",
+  "name": "HearthSync+ Kitchen Concierge",
+  "version": "1.0.0",
+  "description": "Autonomous multimodal kitchen and commerce concierge that eliminates food waste, optimizes grocery budgets, and stages Echo Show cooking timers.",
+  "mcpServer": {
+    "transport": "streamable-http",
+    "url": "http://localhost:3000/mcp",
+    "protocolVersion": "2025-11-25",
+    "authentication": {
+      "type": "oauth2.1-pkce",
+      "prmEndpoint": "http://localhost:3000/.well-known/oauth-protected-resource",
+      "authorizationEndpoint": "http://localhost:3000/oauth/authorize",
+      "tokenEndpoint": "http://localhost:3000/oauth/token"
+    }
+  },
+  "capabilities": {
+    "tools": [
+      {
+        "name": "sync_pantry_inventory",
+        "description": "Reads and updates persistent pantry database; flags items expiring within 48h.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "householdId": {
+              "type": "string"
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "list",
+                "upsert",
+                "consume"
+              ]
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          },
+          "required": [
+            "householdId",
+            "action"
+          ]
+        }
+      },
+      {
+        "name": "plan_expiry_meals",
+        "description": "Matches expiring inventory against household allergies, dietary rules, and macro targets; returns structured meal cards.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "householdId": {
+              "type": "string"
+            },
+            "dietaryTags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maxPrepMinutes": {
+              "type": "number"
+            },
+            "servings": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "householdId"
+          ]
+        }
+      },
+      {
+        "name": "optimize_smart_cart",
+        "description": "Diffs recipes against pantry stock, performs automated unit-price brand substitutions, and stages ui://hearth/cart-carousel.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "householdId": {
+              "type": "string"
+            },
+            "recipeIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "budgetCapUsd": {
+              "type": "number"
+            },
+            "preferOrganic": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "householdId",
+            "recipeIds"
+          ]
+        }
+      },
+      {
+        "name": "authorize_checkout",
+        "description": "Enforces explicit verbal/touch confirmation token and budget ceiling before committing simulated grocery checkout.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "householdId": {
+              "type": "string"
+            },
+            "cartId": {
+              "type": "string"
+            },
+            "userConfirmationToken": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "householdId",
+            "cartId",
+            "userConfirmationToken"
+          ]
+        }
+      },
+      {
+        "name": "stage_kitchen_timers",
+        "description": "Pushes synchronized multi-burner cooking timers and voice readouts directly to the Echo Show ambient surface.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "householdId": {
+              "type": "string"
+            },
+            "recipeId": {
+              "type": "string"
+            },
+            "stepTimers": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          },
+          "required": [
+            "householdId",
+            "recipeId",
+            "stepTimers"
+          ]
+        }
+      }
+    ],
+    "resources": [
+      {
+        "uri": "hearth://household/memory",
+        "name": "Household Memory & Preferences",
+        "mimeType": "application/json",
+        "description": "Cross-session JSON state including dietary restrictions, weekly budget limits, and active carts."
+      },
+      {
+        "uri": "ui://hearth/cart-carousel",
+        "name": "Interactive Grocery Cart Carousel MCP App",
+        "mimeType": "text/html;profile=mcp-app",
+        "description": "Interactive HTML/JS micro-app rendered on the Echo Show 21 conversation view for 1-tap ingredient brand swaps."
+      }
+    ],
+    "mcpApps": [
+      {
+        "uri": "ui://hearth/cart-carousel",
+        "targetSurface": "echo-show-conversation"
+      }
+    ]
+  },
+  "displayMetadata": {
+    "category": "smart-kitchen",
+    "icon": "assets/icon-512.png",
+    "supportedDevices": [
+      "echo-show-21",
+      "echo-show-15",
+      "echo-show-10",
+      "echo-show-8",
+      "alexa-app"
+    ],
+    "multimodalFeatures": [
+      "interactive-touch-cards",
+      "mcp-apps-carousel",
+      "ambient-voice-tts",
+      "multi-burner-timers",
+      "wire-protocol-telemetry"
+    ]
+  },
+  "examplePhrases": [
+    "Alexa, plan two dinners using our expiring spinach and paneer under $25.",
+    "Alexa, stage our smart grocery cart with unit price substitutions.",
+    "Alexa, confirm checkout and start our kitchen cooking timers."
+  ]
+}

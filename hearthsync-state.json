@@ -1,0 +1,164 @@
+{
+  "household": {
+    "householdId": "hh-alexa-kitchen-01",
+    "familyName": "Miller Family",
+    "dietaryTags": [
+      "Vegetarian",
+      "Nut-Free",
+      "High-Protein"
+    ],
+    "allergies": [
+      "Peanuts",
+      "Tree Nuts"
+    ],
+    "weeklyBudgetUsd": 65,
+    "budgetRemainingUsd": 48.5,
+    "macroTargets": {
+      "proteinGrams": 95,
+      "carbsGrams": 140,
+      "fatGrams": 40,
+      "calories": 1850
+    },
+    "lastActiveSession": "2026-10-16T11:16:50.086Z",
+    "activeCartId": "cart-21f2ce00"
+  },
+  "pantry": [
+    {
+      "id": "item-spinach",
+      "name": "Organic Baby Spinach",
+      "category": "produce",
+      "quantity": 250,
+      "unit": "g",
+      "expiryDate": "2026-10-17",
+      "daysUntilExpiry": 1,
+      "isExpiringUrgent": true,
+      "estimatedCostUsd": 3.49
+    },
+    {
+      "id": "item-paneer",
+      "name": "Fresh Artisanal Paneer",
+      "category": "dairy",
+      "quantity": 350,
+      "unit": "g",
+      "expiryDate": "2026-10-17",
+      "daysUntilExpiry": 1,
+      "isExpiringUrgent": true,
+      "estimatedCostUsd": 5.99
+    },
+    {
+      "id": "item-yogurt",
+      "name": "Plain Whole Milk Greek Yogurt",
+      "category": "dairy",
+      "quantity": 450,
+      "unit": "g",
+      "expiryDate": "2026-10-18",
+      "daysUntilExpiry": 2,
+      "isExpiringUrgent": true,
+      "estimatedCostUsd": 4.29
+    },
+    {
+      "id": "item-rice",
+      "name": "Aged Basmati Rice",
+      "category": "pantry",
+      "quantity": 1000,
+      "unit": "g",
+      "expiryDate": "2027-04-14",
+      "daysUntilExpiry": 180,
+      "isExpiringUrgent": false,
+      "estimatedCostUsd": 6.5
+    },
+    {
+      "id": "item-oil",
+      "name": "Cold-Pressed Olive Oil",
+      "category": "pantry",
+      "quantity": 500,
+      "unit": "ml",
+      "expiryDate": "2027-02-13",
+      "daysUntilExpiry": 120,
+      "isExpiringUrgent": false,
+      "estimatedCostUsd": 9.99
+    },
+    {
+      "id": "item-garam-masala",
+      "name": "Organic Garam Masala",
+      "category": "spices",
+      "quantity": 75,
+      "unit": "g",
+      "expiryDate": "2027-01-14",
+      "daysUntilExpiry": 90,
+      "isExpiringUrgent": false,
+      "estimatedCostUsd": 3.99
+    },
+    {
+      "id": "item-tomatoes",
+      "name": "Vine-Ripened Tomatoes",
+      "category": "produce",
+      "quantity": 400,
+      "unit": "g",
+      "expiryDate": "2026-10-21",
+      "daysUntilExpiry": 5,
+      "isExpiringUrgent": false,
+      "estimatedCostUsd": 2.8
+    },
+    {
+      "id": "item-onions",
+      "name": "Yellow Cooking Onions",
+      "category": "produce",
+      "quantity": 500,
+      "unit": "g",
+      "expiryDate": "2026-10-23",
+      "daysUntilExpiry": 7,
+      "isExpiringUrgent": false,
+      "estimatedCostUsd": 2.1
+    }
+  ],
+  "carts": {
+    "cart-21f2ce00": {
+      "id": "cart-21f2ce00",
+      "householdId": "hh-alexa-kitchen-01",
+      "items": [
+        {
+          "itemId": "item-sub-seeds",
+          "name": "Roasted Pumpkin Seeds (Nut-Free Garnish, 200g)",
+          "quantity": 1,
+          "unit": "bag",
+          "priceUsd": 3.59,
+          "isOrganic": true,
+          "originalItemName": "Pine Nuts (100g)",
+          "savingsUsd": 6.4,
+          "substitutionReason": "Allergen-safe nut-free substitute with lower unit price ($0.018/g vs $0.099/g)"
+        },
+        {
+          "itemId": "item-coriander",
+          "name": "Fresh Organic Coriander / Cilantro",
+          "quantity": 1,
+          "unit": "bunch",
+          "priceUsd": 1.49,
+          "isOrganic": true
+        },
+        {
+          "itemId": "item-pita",
+          "name": "Stone-Baked Whole Wheat Pita Pockets (6-pack)",
+          "quantity": 1,
+          "unit": "pack",
+          "priceUsd": 3.29,
+          "isOrganic": false
+        },
+        {
+          "itemId": "item-sumac",
+          "name": "Ground Wild Sumac Spice (50g)",
+          "quantity": 1,
+          "unit": "jar",
+          "priceUsd": 2.99,
+          "isOrganic": true
+        }
+      ],
+      "totalCostUsd": 11.36,
+      "budgetCapUsd": 25,
+      "savingsTotalUsd": 6.4,
+      "status": "staged",
+      "createdAt": "2026-10-16T11:18:40.497Z"
+    }
+  },
+  "timers": []
+}

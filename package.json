@@ -1,0 +1,40 @@
+{
+  "name": "hearthsync-plus",
+  "version": "1.0.0",
+  "description": "Autonomous Multimodal Household & Smart-Kitchen Commerce Concierge on Alexa+ via Streamable HTTP MCP & Agent Skills",
+  "type": "module",
+  "main": "server/mcp-server.ts",
+  "scripts": {
+    "//dev": "Runs the MCP server and Echo Show 21 simulator web app with live auto-reload",
+    "dev": "tsx watch server/mcp-server.ts",
+    "//start": "Runs the production server using tsx directly",
+    "start": "tsx server/mcp-server.ts",
+    "//build": "Type-checks all TypeScript files according to tsconfig.json",
+    "build": "tsc --noEmit",
+    "//validate:skills": "Verifies that python skill scripts execute and pass syntax checks",
+    "validate:skills": "python -m py_compile .agents/skills/smart-cart-checkout/scripts/optimize_unit_price.py .agents/skills/alexa-addon-packager/scripts/scaffold_addon_manifest.py"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.6.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.13.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "keywords": [
+    "alexa-plus",
+    "mcp",
+    "model-context-protocol",
+    "streamable-http",
+    "agent-skills",
+    "smart-kitchen",
+    "hackathon"
+  ],
+  "author": "HearthSync+ Team",
+  "license": "MIT"
+}
